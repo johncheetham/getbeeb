@@ -1,0 +1,35 @@
+GetBeeb 0.1.4
+John Cheetham October 2008
+
+Project Homepage : http://www.johncheetham.com/projects/getbeeb
+email : developer@johncheetham.com
+
+Description
+-----------
+Processes XML feeds from the BBC and creates HTML files containing links to the
+realaudio files. It is licensed under the GPL (see the file named COPYING).
+
+Running
+-------
+To run it use the 'run' shell script.
+
+The list of URLs for the XML feeds is contained in the file 'filelist'.
+
+Options can be configured in the 'getbeeb.properties' file.
+
+Set 'getAllLinks=false' to generate links to the 'Media Selectors' rather than
+to the realaudio file itself. This runs much quicker since it only requires one
+connection to get the XML feed itself. The link will point to the getbeeb.pl
+perl cgi program so to use this option you need a perl enabled webserver with 
+the getbeeb.pl program in the cgi-bin. This is the default and you can see
+generated pages at
+http://www.johncheetham.com/projects/getbeeb/pdahome.html.
+
+Set 'getAllLinks=true' to generate links to the actual realaudio file (.ram file).
+This requires making a connection to the BBC for every programme and the runtime 
+will be much longer. It produces standalone html files that don't need a
+webserver.
+
+Set the 'sleep' option to control how long (in seconds) the program waits
+in between connections.
+

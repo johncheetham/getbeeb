@@ -1,0 +1,17 @@
+# Filelist contains the url of the xml feed followed by the name of the output html file
+#http://localhost/test/alba.xml,test.html
+http://www.bbc.co.uk/radio/aod/availability/radio1.xml,radio1.html
+http://www.bbc.co.uk/radio/aod/availability/radio2.xml,radio2.html
+http://www.bbc.co.uk/radio/aod/availability/radio3.xml,radio3.html
+http://www.bbc.co.uk/radio/aod/availability/radio4.xml,radio4.html
+http://www.bbc.co.uk/radio/aod/availability/fivelive.xml,fivelive.html
+http://www.bbc.co.uk/radio/aod/availability/1xtra.xml,1xtra.html
+http://www.bbc.co.uk/radio/aod/availability/6music.xml,6music.html
+http://www.bbc.co.uk/radio/aod/availability/bbc7.xml,bbc7.html
+http://www.bbc.co.uk/radio/aod/availability/asiannetwork.xml,asiannetwork.html
+http://www.bbc.co.uk/radio/aod/availability/alba.xml,alba.html
+http://www.bbc.co.uk/radio/aod/availability/radioscotland.xml,radioscotland.html
+http://www.bbc.co.uk/radio/aod/availability/radioulster.xml,radioulster.html
+http://www.bbc.co.uk/radio/aod/availability/radiofoyle.xml,radiofoyle.html
+http://www.bbc.co.uk/radio/aod/availability/radiowales.xml,radiowales.html
+http://www.bbc.co.uk/radio/aod/availability/radiocymru.xml,radiocymru.html
