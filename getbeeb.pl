@@ -20,99 +20,68 @@
  	    
 use strict;
 
-use IO::Socket::INET;
-use CGI qw/:standard/;
+use LWP::Simple;
+use CGI qw(:cgi);
 use XML::Parser;
 
 my $link="";
 my $page="";
 my $href='';
+my $href2='';
 my $f=0;
+my $f2=0;
 
 if (param()) {
-       $link      = param('mslink');
+    $link = param('mslink');
 } 
 
 if ($link !~ /^http:\/\/www\.bbc\.co\.uk\//) {
-	exit_error("script error - invalid hostname");	
+    exit_error("script error - invalid hostname");	
 } else {
-	$page="$'";
+    #$page="$'";
+    $page=$link;
 }
 if ($page !~ /[A-Za-z0-9\/]/) {
-	exit_error("script error - invalid mslink");
+    exit_error("script error - invalid mslink");
 }
+
+# for testing
+#$page = 'http://localhost/projects/getbeeb/b00s2x98';
+#$page = 'http://localhost/projects/getbeeb/test.txt';
 
 # initialize the parser
 my $parser = XML::Parser->new( Handlers => 
-                                     {
-                                      Start=>\&handle_start
-                                     # End=>\&handle_end,
-                                     });
+    {
+        Start=>\&handle_start
+        # End=>\&handle_end,
+    });
 
-my $sock = IO::Socket::INET->new(PeerAddr => "www.bbc.co.uk",
-                                 PeerPort => 'http(80)',
-                                 Proto    => 'tcp')
-			or exit_error("Can't connect $@\n");
-	
-print $sock "GET /$page HTTP/1.0\r\n\r\n" or exit_error("Can't send");       
-
-my $xmldata;
-my $prt=0;
-my $lc=0;
-while (my $line = <$sock>) {		
-	if (!$prt and $line =~ /^<\?xml/) {
-		$prt=1;
-	}
-	if ($prt) {
-		$lc++;		
-		$xmldata.=$line;
-	}
-}
-close $sock;
+my $xmldata = get($page);
 
 $parser->parse($xmldata);
 
+print "Content-type: text/html\r\n\r\n";
+print "<html>";
+print "<head>";	
+print "</head>";
+print "<body>";
 if ($href) {
-	#
-	# Check for Pocket PC
-	#
-	##if ($ENV{'HTTP_USER_AGENT'} =~ /MSIE 4.01; Windows CE; PPC;/) {
-		print "Content-type: text/html\r\n\r\n";
-		print "<html>";
-		print "<head>";	
-		print "</head>";
-		print "<body>";
-		print "click on link<br><br>";
-		print "<a href=\"$href\">$href</a>";
-		print "</body>";
-		print "</html>";
-	##} else {			
-		#print "Content-type: audio/x-pn-realaudio\r\n\r\n";
-		#print $href;
-		
-		#
-		#	print "Content-type: text/html\r\n\r\n";
-		#       print "<html>";
-		#	print "<head>";
-		#	print "<meta content='1;url=$href/' http-equiv='refresh'/>";
-		#	print "</head>";
-		#	print "<body>";
-		#	print "redirecting";
-		#	print "</body>";
-		#	print "</html>";
-		#
-	##}
-
+    print "Click on the link to play the selection<br><br>";
+    print "<a href=\"$href\">$href</a> (real audio format)<br><br>";
+} elsif ($href2) {
+    print "Click on the link to play the selection<br><br>";
+    print "<a href=\"$href2\">$href2</a> (wma format)";
 } else {
-	print "Content-type: text/html\r\n\r\n";
-	print "unavailable";
+    print "Selection is Unavailable";
 }
+
 #
 # process a start-of-element event: print message about element
 #
 sub handle_start {
     my( $expat, $element, %attrs ) = @_;    
   
+    # get real audio href
     if ($element eq 'media') {
         if (($attrs{'kind'} eq 'audio') and ($attrs{'encoding'} eq 'real')) {
            $f=1;
@@ -125,10 +94,23 @@ sub handle_start {
         }      
     }
 
+    # get wma href2
+    if ($element eq 'media') {
+        if (($attrs{'kind'} eq 'audio') and ($attrs{'encoding'} eq 'wma9')) {
+           $f2=1;
+        } else {
+           $f2=0;
+        }	
+    } elsif ($element eq 'connection') {
+        if ($f2 and !$href2) {
+          $href2=$attrs{'href'};
+        }      
+    }
+
 }
 
 sub exit_error {	
-	print "Content-type: text/html\r\n\r\n";
-	print shift;
-	exit;
+    print "Content-type: text/plain\r\n\r\n";   
+    print shift;    
+    exit;
 }
